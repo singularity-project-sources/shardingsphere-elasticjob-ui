@@ -17,14 +17,14 @@
 
 package org.apache.shardingsphere.elasticjob.cloud.ui.config;
 
+import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
-import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.vendor.AbstractJpaVendorAdapter;
-import org.springframework.orm.jpa.vendor.OpenJpaVendorAdapter;
+import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
 import javax.sql.DataSource;
@@ -33,28 +33,25 @@ import java.util.Map;
 
 @Configuration
 @EnableConfigurationProperties(JpaProperties.class)
-public class OpenJPAConfig extends JpaBaseConfiguration {
+public class EclipseLinkJpaConfig extends JpaBaseConfiguration {
     
-    protected OpenJPAConfig(DataSource dataSource,
-                            JpaProperties properties,
-                            ObjectProvider<JtaTransactionManager> jtaTransactionManager,
-                            ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
-        super(dataSource, properties, jtaTransactionManager, transactionManagerCustomizers);
+    protected EclipseLinkJpaConfig(DataSource dataSource,
+                                   JpaProperties properties,
+                                   ObjectProvider<JtaTransactionManager> jtaTransactionManager) {
+        super(dataSource, properties, jtaTransactionManager);
     }
     
     @Override
     protected AbstractJpaVendorAdapter createJpaVendorAdapter() {
-        return new OpenJpaVendorAdapter();
+        return new EclipseLinkJpaVendorAdapter();
     }
     
     @Override
     protected Map<String, Object> getVendorProperties() {
         final Map<String, Object> result = new HashMap<>();
-        result.put("openjpa.jdbc.SynchronizeMappings", "buildSchema(ForeignKeys=true)");
-        result.put("openjpa.ClassLoadEnhancement", "false");
-        result.put("openjpa.DynamicEnhancementAgent", "false");
-        result.put("openjpa.RuntimeUnenhancedClasses", "supported");
-        result.put("openjpa.Log", "slf4j");
+        //result.put("openjpa.jdbc.SynchronizeMappings", "buildSchema(ForeignKeys=true)");
+        result.put(PersistenceUnitProperties.WEAVING, true);
+        result.put(PersistenceUnitProperties.LOGGING_LOGGER, "org.eclipse.persistence.logging.slf4j.SLF4JLogger");
         return result;
     }
     

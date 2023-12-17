@@ -102,7 +102,7 @@ public final class EventTraceHistoryServiceImpl implements EventTraceHistoryServ
             page = pageRequest.getPageNumber() - 1;
             perPage = pageRequest.getPageSize();
         }
-        return new PageRequest(page, perPage, getSort(pageRequest, clazz));
+        return PageRequest.of(page, perPage, getSort(pageRequest, clazz));
     }
     
     private <T> Sort getSort(final BasePageRequest pageRequest, final Class<T> clazz) {
@@ -119,7 +119,7 @@ public final class EventTraceHistoryServiceImpl implements EventTraceHistoryServ
                 order = Sort.Direction.valueOf(pageRequest.getOrderType());
             } catch (IllegalArgumentException ignored) {
             }
-            sort = new Sort(order, pageRequest.getSortBy());
+            sort = Sort.by(order, pageRequest.getSortBy());
         }
         return sort;
     }

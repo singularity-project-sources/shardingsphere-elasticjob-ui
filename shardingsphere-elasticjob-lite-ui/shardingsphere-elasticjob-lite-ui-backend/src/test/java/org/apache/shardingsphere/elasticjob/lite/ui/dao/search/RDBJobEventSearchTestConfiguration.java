@@ -47,7 +47,7 @@ public class RDBJobEventSearchTestConfiguration implements InitializingBean {
     private void initStorage() throws SQLException {
         eventTraceHistoryService.findJobExecutionEvents(new FindJobExecutionEventsRequest(10, 1));
         eventTraceHistoryService.findJobStatusTraceEvents(new FindJobStatusTraceEventsRequest(10, 1));
-        RDBJobEventStorage storage = new RDBJobEventStorage(dataSource);
+        RDBJobEventStorage storage = RDBJobEventStorage.getInstance(dataSource);
         for (int i = 1; i <= 500L; i++) {
             JobExecutionEvent startEvent = new JobExecutionEvent("localhost", "127.0.0.1", "fake_task_id", "test_job_" + i, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
             storage.addJobExecutionEvent(startEvent);
